@@ -48,7 +48,13 @@ class Node {
   }
 }
 
-
+/**
+ * Finds the minimum weight path through a 2-D matrix from the first row to the last row.
+ *
+ * @param {array} matrix a 2-D matrix
+ * @return {object} object with `weight` and `path`, where `weight` is the weight of the min weight
+ *    path, and `path` is an array of numbers representing the path
+ */
 module.exports = function minWeightPath (matrix) {
   assert(_.isArray(matrix), 'matrix must be an array');
   const nRows = matrix.length;
@@ -61,6 +67,7 @@ module.exports = function minWeightPath (matrix) {
     return { weight: 0, path: [] };
   }
 
+  // Construct a priority queue where we will push on the nodes as we search for the min-weight path.
   const pq = new Heap(function comparator (nodeA, nodeB) {
     // We include the number of rows until reaching the bottom so that we favor lower nodes. This is
     // because given two nodes along paths with the same path weight, the lower node is more likely to
@@ -76,11 +83,13 @@ module.exports = function minWeightPath (matrix) {
     pq.push(new Node(0, i, null, row[i]));
   }
 
+  // Loop, taking the min node off of the priority queue and putting all of the possible next nodes onto
+  // the priority queue. Once we reach a node that is at the last row, we have found the min-weight path.
   let minNode;
   while(true) {
     minNode = pq.pop();
 
-    // We reached the end, break out of the loop
+    // We reached the last row!
     if(!minNode.hasBelow(nRows)) {
       break;
     }
